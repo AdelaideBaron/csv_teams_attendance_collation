@@ -43,8 +43,6 @@ def get_attendees(file):
     return attendees
 
 
-# https://stackoverflow.com/questions/26464567/csv-read-specific-row
-
 def create_list_of_date_and_attendees(file):
     date = read_original_csv_date(file)
     attendees = get_attendees(file)
@@ -63,7 +61,7 @@ def add_attendance_to_csv():
         for i in range(len(these_attendees)):
             these_attendees[i] = these_attendees[i].lower()
         these_attendees.sort()
-        if (len(these_attendees) < 50):
+        if (len(these_attendees) < 50): #adjust for max length of register 
             to_add = 50 - len(these_attendees)
             i = 0
             while i < to_add:
