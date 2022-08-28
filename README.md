@@ -15,3 +15,8 @@ A simple program to collate attendee, and date, information from multiple teams 
 4. Adjust `if (len(these_attendees) < 50):` to less than the max register length (e.g. 50 here 
 3. Run main 
 4. See the generated output.csv file 
+
+
+### WIP 
+- Remove duplicaets 
+- Count for each person 
