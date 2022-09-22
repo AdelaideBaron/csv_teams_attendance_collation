@@ -20,3 +20,4 @@ A simple program to collate attendee, and date, information from multiple teams 
 ### WIP 
 - Remove duplicates
 - Count for each person 
+- Remove (guest)
