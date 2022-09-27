@@ -42,41 +42,74 @@ def get_attendees(file):
 
     return attendees
 
+def remove_duplicate_attendees(attendees):
+    attendees_no_dupe = list(dict.fromkeys(attendees))
+    return attendees_no_dupe
+
+def remove_guest_title(attendees):
+    #split at spaces, then make individual words
+    for attendee in attendees:
+        seperated_strings = attendee.split(" ")
+        # print(seperated_strings)
+        if "(Guest)" in seperated_strings:
+            attendees.remove(attendee)
+            seperated_strings.remove("(Guest)")
+            string_to_add = ' '.join(seperated_strings)
+            attendees.append(string_to_add)
+        elif "(guest)" in seperated_strings:
+            attendees.remove(attendee)
+            seperated_strings.remove("(guest)")
+            string_to_add = ' '.join(seperated_strings)
+            attendees.append(string_to_add)
+            # print(attendees)
+
+    return attendees
 
 def create_list_of_date_and_attendees(file):
     date = read_original_csv_date(file)
     attendees = get_attendees(file)
+    attendees = remove_guest_title(attendees)
+    attendees = remove_duplicate_attendees(attendees)
     attendees.sort()
     new_list = [date] + attendees
+    new_list = [*set(new_list)] # https://www.geeksforgeeks.org/python-ways-to-remove-duplicates-from-list/
     return new_list
-
 
 def add_attendance_to_csv():
     global df
     df = pd.DataFrame(data)
     for file in list_of_attendance_files:
-        this_date = read_original_csv_date(file)
+        this_header = read_original_csv_date(file)
         these_attendees = get_attendees(file)
+        attendees = remove_guest_title(these_attendees)
+        best_attendees = remove_duplicate_attendees(attendees)
 
-        for i in range(len(these_attendees)):
-            these_attendees[i] = these_attendees[i].lower()
-        these_attendees.sort()
-        if (len(these_attendees) < 50): #adjust for max length of register 
-            to_add = 50 - len(these_attendees)
+        for i in range(len(best_attendees)):
+            best_attendees[i] = best_attendees[i].lower()
+        best_attendees.sort()
+
+        best_attendees = remove_guest_title(best_attendees)
+        if (len(best_attendees) < 50): #this is the amount of attendees max
+            to_add = 50 - len(best_attendees)
             i = 0
             while i < to_add:
-                these_attendees.append('')
+                best_attendees.append('')
                 i += 1
-        df[this_date] = these_attendees
-
+        df[this_header] = best_attendees
 
 if __name__ == '__main__':
 
-    list_of_attendance_files = [ #add CSV file paths as list here
-         ]
-    create_csv("output")
+    list_of_attendance_files = [#insert here 
+    ]
+
+    csv_name = input("Enter name for new CSV (must not exist already): ")
+
     data = {}
     add_attendance_to_csv()
-    df.to_csv('output.csv')
+    create_csv("{}".format(csv_name))
+
+   
+    df.to_csv('{}.csv'.format(csv_name))
+
 
 
