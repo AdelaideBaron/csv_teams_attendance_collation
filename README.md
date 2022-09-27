@@ -6,7 +6,8 @@ A simple program to collate attendee, and date, information from multiple teams 
 - Teams attendance report with the first column containing the following rows (roughly rows 3 and 9: 
   - Start time
   - Name
-
+  - People must join with the same name each week, otherwise it won't recognise that they're the same person 
+- must not have anything but names in expected attendance, no headers 
 
 ### How to use: 
 1. Delete any output.csv files, or rename, prior to each run
@@ -18,6 +19,5 @@ A simple program to collate attendee, and date, information from multiple teams 
 
 
 ### WIP 
-- Remove duplicates
 - Count for each person 
 - Remove (guest)
