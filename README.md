@@ -11,7 +11,7 @@ A simple program to collate attendee, and date, information from multiple teams 
 
 ### How to use: 
 1. Import all seperate attendance files, as seperate CSVs (please double check) into project directory 
-2. In list_of_attendance_files (~line 77, main.py) place the path names (copy from content root) of each file in the array within " " , e.g. 
+2. In list_of_attendance_files place the path names (copy from content root) of each file in the array within " " , e.g. 
 ``` 
 list_of_attendance_files = ["fileone_path.csv", "filetwo_path.csv"] 
 ```
