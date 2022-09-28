@@ -50,7 +50,6 @@ def remove_guest_title(attendees):
     #split at spaces, then make individual words
     for attendee in attendees:
         seperated_strings = attendee.split(" ")
-        # print(seperated_strings)
         if "(Guest)" in seperated_strings:
             attendees.remove(attendee)
             seperated_strings.remove("(Guest)")
@@ -71,9 +70,9 @@ def create_list_of_date_and_attendees(file):
     attendees = remove_guest_title(attendees)
     attendees = remove_duplicate_attendees(attendees)
     attendees.sort()
-    new_list = [date] + attendees
-    new_list = [*set(new_list)] # https://www.geeksforgeeks.org/python-ways-to-remove-duplicates-from-list/
-    return new_list
+    newest_list = [date] + attendees
+    newest_list = [*set(newest_list)] 
+    return newest_list
 
 def add_attendance_to_csv():
     global df
