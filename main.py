@@ -43,13 +43,16 @@ def get_attendees(file):
     return attendees
 
 def remove_duplicate_attendees(attendees):
+    # mylist = ["a", "b", "a", "c", "c"]
     attendees_no_dupe = list(dict.fromkeys(attendees))
+    # print(attendees_no_dupe)
     return attendees_no_dupe
 
 def remove_guest_title(attendees):
     #split at spaces, then make individual words
     for attendee in attendees:
         seperated_strings = attendee.split(" ")
+        # print(seperated_strings)
         if "(Guest)" in seperated_strings:
             attendees.remove(attendee)
             seperated_strings.remove("(Guest)")
@@ -70,9 +73,9 @@ def create_list_of_date_and_attendees(file):
     attendees = remove_guest_title(attendees)
     attendees = remove_duplicate_attendees(attendees)
     attendees.sort()
-    newest_list = [date] + attendees
-    newest_list = [*set(newest_list)] 
-    return newest_list
+    new_list = [date] + attendees
+    new_list = [*set(new_list)] # https://www.geeksforgeeks.org/python-ways-to-remove-duplicates-from-list/
+    return new_list
 
 def add_attendance_to_csv():
     global df
@@ -96,19 +99,87 @@ def add_attendance_to_csv():
                 i += 1
         df[this_header] = best_attendees
 
+def get_expected_attendees(expected_attendees): #to do
+    #read the file of expected
+    expected_attendees_file = open(expected_attendees, "r")
+    row_entries = csv.reader(expected_attendees_file)
+    expected_attendees = []
+    for row in row_entries:
+        name = row[0]
+        expected_attendees.append(name)
+
+    return expected_attendees
+
+def check_expected_attendees(list_of_attendance_files, expected_attendees_file):
+    expected_attendees = get_expected_attendees(expected_attendees_file)
+    for file in list_of_attendance_files:
+        this_header = read_original_csv_date(file)
+        these_attendees = get_attendees(file)
+        attendees = remove_guest_title(these_attendees)
+        best_attendees = remove_duplicate_attendees(attendees)
+
+        for i in range(len(best_attendees)):
+            best_attendees[i] = best_attendees[i].lower()
+        best_attendees.sort()
+
+        best_attendees = remove_guest_title(best_attendees)
+
+        attendence = []
+        person_attendance = {}
+        for person in expected_attendees:
+            person = person.lower()
+            expected_names = person.split(" ")
+            for attendee in best_attendees:
+                attendee_names = attendee.split(" ")
+                for name in expected_names:
+                    if name in attendee_names:
+                        attendence.append(person)
+                        break
+
+            amount_of_attendance = attendence.count(person)
+            person_attendance[person] = amount_of_attendance
+
+        output = pd.DataFrame()
+        output = output.append(person_attendance, ignore_index=True)
+
+        return output
+
+
 if __name__ == '__main__':
 
-    list_of_attendance_files = [#insert here 
-    ]
+    check_attendance = input("Would you like to check attendance too? Enter 'YES' or 'NO'")
+    if check_attendance == "NO":
+        list_of_attendance_files = [ "attendance_files/Weds/Intro to Python - Attendance report 21-09-22 - Intro to Python - Attendance report 21-09-22.csv"
+         ]
+        csv_name = input("Enter name for new CSV (must not exist already): ")
 
-    csv_name = input("Enter name for new CSV (must not exist already): ")
+        data = {}
+        add_attendance_to_csv()
+        create_csv("{}".format(csv_name))
 
-    data = {}
-    add_attendance_to_csv()
-    create_csv("{}".format(csv_name))
+        df.to_csv('{}.csv'.format(csv_name))
+    elif check_attendance == "YES":
+        list_of_attendance_files = [
+            "attendance_files/Weds/Intro to Python - Attendance report 21-09-22 - Intro to Python - Attendance report 21-09-22.csv"
+            ]
+        csv_name = input("Enter name for new CSV (must not exist already): ")
 
-   
-    df.to_csv('{}.csv'.format(csv_name))
+        expected_attendance_files = "attendance_files/Weds/expected_attendance - Sheet1 (1).csv"
 
+        data = {}
+        add_attendance_to_csv()
+        create_csv("{}".format(csv_name))
+
+        df.to_csv('{}.csv'.format(csv_name))
+
+        print(get_expected_attendees(expected_attendance_files))
+
+        attendance_figure_df = check_expected_attendees(list_of_attendance_files, expected_attendance_files)
+
+        attendance_file_csv_name = input("Input name of attendance file: ")
+        attendance_figure_df.to_csv('{}.csv'.format(attendance_file_csv_name))
+
+    else:
+        print("Invalid response, please restart.")
 
 
